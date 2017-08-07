@@ -4,7 +4,10 @@ import en from 'react-intl/locale-data/en';
 import { getCurrentLocale, getLocaleData, setLocale } from 'grommet/utils/Locale';
 import { Provider } from 'react-redux';
 import store from './store';
-import Main from './components/Main';
+import Router from './router';
+import setDefaultUrl from './utils/setDefaultUrl';
+import config from './config';
+import {initialize} from "./actions/session";
 
 const locale = getCurrentLocale();
 addLocaleData(en);
@@ -16,14 +19,16 @@ try {
     messages = require('./messages/en-US');
 }
 
-console.log(messages);
-
 const localeData = getLocaleData(messages, locale);
+
+store.dispatch(initialize(window.location.pathname));
+
+setDefaultUrl(config.apiUrl);
 
 export default () => (
     <Provider store={store}>
         <IntlProvider locale={localeData.locale} messages={localeData.messages}>
-            <Main />
+            <Router />
         </IntlProvider>
     </Provider>
 );
